@@ -20,7 +20,7 @@ function RotXZ(t) = let(a = -45*(4 - hillf(t))/4) RotY(a);
 // Establishes the radius of the circle.
 function ShiftX(t) = Translate([60, 0, 0]);
 
-// Combine all the above operations, with the rightmost applied first.
+// Combine all of the above operations, with the rightmost applied first.
 function PathMatrix(t) = AffMerge([RotZt(t), Hills(t), ShiftX(t), RotXZ(t)]);
 
 // Defines the cross section of the track.
