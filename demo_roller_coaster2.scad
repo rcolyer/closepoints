@@ -4,18 +4,26 @@
 
 use <closepoints.scad>
 
-
+// Used to form the track in a complete circle around the z-axis.
 function RotZt(t) = RotZ(360*t);
 
+// Provides the variation in height of the roller coaster track.
 function hillf(t) = sin(-2*t*360-115)+sin(-3*t*360-57)+2;
 function Hills(t) = Translate([0, 0, 20*hillf(t)]);
 
+// Used to tilt the track inward when it is lower down.
+// This reuses the hill value as an input.
+// Note that this is applied below before rotation around the circle, so
+// the rotation in y is always toward the middle.
 function RotXZ(t) = let(a = -45*(4 - hillf(t))/4) RotY(a);
 
+// Establishes the radius of the circle.
 function ShiftX(t) = Translate([60, 0, 0]);
 
+// Combine all the above operations, with the rightmost applied first.
 function PathMatrix(t) = AffMerge([RotZt(t), Hills(t), ShiftX(t), RotXZ(t)]);
 
+// Defines the cross section of the track.
 function ThePolygon(t) =
   [[-5,0,0], [-5,0,3], [-3,0,3], [-3,0,1], [3,0,1], [3,0,3], [5,0,3], [5,0,0]];
 
@@ -28,6 +36,7 @@ pointarrays =
 
 CloseLoop(pointarrays);
 
+// Everything below this point places the animated train on the track.
 $fa = 4; $fs = 0.4;
 
 module wheel() {
@@ -72,7 +81,12 @@ module train() {
     }
 }
 
+// Reuses the same functions that make the track to orient the train on
+// top of the track.  This step does a numerical derivative of the height
+// of the track at the train's location to find the slope of the track.
 ztilt = atan2(20*(hillf($t+0.002)-hillf($t-0.002)), 60*0.004*6.28);
+// Note that multmatrix takes the same form of input as the Affine call
+// above, so we can apply these to geometries the same way as points.
 multmatrix(AffMerge([RotZt($t), Hills($t), ShiftX($t)]))
   translate([0,0,3])
   rotate([ztilt, 0, 0])
