@@ -1,4 +1,4 @@
-// Created 2021 by Ryan A. Colyer.
+// Created 2021-2022 by Ryan A. Colyer.
 // This work is released with CC0 into the public domain.
 // https://creativecommons.org/publicdomain/zero/1.0/
 
@@ -158,4 +158,18 @@ function Scale(v) =
   [[v[0],    0,    0, 0],
    [   0, v[1],    0, 0],
    [   0,    0, v[2], 0]];
+
+// Find the bounding box of pointarrays.
+// Returns [[min_x, min_y, min_z], [max_x, max_y, max_z]]
+function BBox(pointarrays) = let(
+    inf = 1e300*1e300,
+    minmax = function(p, a=0, b=0, res=[[inf, inf, inf], [-inf, -inf, -inf]])
+      a >= len(p) ? res :
+      minmax(p, b >= len(p[a])-1 ? a+1 : a, (b+1) % len(p[a]),
+        [[min(res[0][0], p[a][b][0]), min(res[0][1], p[a][b][1]),
+          min(res[0][2], p[a][b][2])],
+         [max(res[1][0], p[a][b][0]), max(res[1][1], p[a][b][1]),
+          max(res[1][2], p[a][b][2])]])
+  )
+  minmax(pointarrays);
 

@@ -90,5 +90,9 @@ function Translate(v)
 
 // Prepare a matrix to scale by vector v.
 function Scale(v)
+
+// Find the bounding box of pointarrays.
+// Returns [[min_x, min_y, min_z], [max_x, max_y, max_z]]
+function BBox(pointarrays)
 ```
 
